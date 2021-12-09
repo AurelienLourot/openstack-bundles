@@ -141,6 +141,8 @@ relations:
   - ceph-radosgw:certificates
 - - vault:certificates
   - mysql-innodb-cluster:certificates
+- - ceph-osd:juju-info
+  - logrotated:juju-info
 applications:
   ceph-mon:
     annotations:
@@ -323,6 +325,12 @@ applications:
     - '0'
     - '1'
     - '2'
+  logrotated:  # LA_TEMP
+    charm: cs:logrotated
+    channel: stable
+    revision: 3
+    options:
+      logrotate-retention: 60
   ntp:
     annotations:
       gui-x: '315'

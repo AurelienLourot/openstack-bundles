@@ -23,11 +23,7 @@ machines:
   '2':
     constraints: tags=metal arch=amd64  # LA_TEMP
 relations:
-- - nova-compute-1a:amqp
-  - rabbitmq-server:amqp
-- - nova-compute-1b:amqp
-  - rabbitmq-server:amqp
-- - nova-compute-1c:amqp
+- - nova-compute:amqp
   - rabbitmq-server:amqp
 - - nova-cloud-controller:identity-service
   - keystone:identity-service
@@ -41,18 +37,10 @@ relations:
   - rabbitmq-server:amqp
 - - nova-cloud-controller:image-service
   - glance:image-service
-- - nova-compute-1a:image-service
-  - glance:image-service
-- - nova-compute-1b:image-service
-  - glance:image-service
-- - nova-compute-1c:image-service
+- - nova-compute:image-service
   - glance:image-service
 - - nova-cloud-controller:cloud-compute
-  - nova-compute-1a:cloud-compute
-- - nova-cloud-controller:cloud-compute
-  - nova-compute-1b:cloud-compute
-- - nova-cloud-controller:cloud-compute
-  - nova-compute-1c:cloud-compute
+  - nova-compute:cloud-compute
 - - nova-cloud-controller:amqp
   - rabbitmq-server:amqp
 - - openstack-dashboard:identity-service
@@ -70,16 +58,8 @@ relations:
 - - cinder-ceph:storage-backend
   - cinder:storage-backend
 - - ceph-mon:client
-  - nova-compute-1a:ceph
-- - ceph-mon:client
-  - nova-compute-1b:ceph
-- - ceph-mon:client
-  - nova-compute-1c:ceph
-- - nova-compute-1a:ceph-access
-  - cinder-ceph:ceph-access
-- - nova-compute-1b:ceph-access
-  - cinder-ceph:ceph-access
-- - nova-compute-1c:ceph-access
+  - nova-compute:ceph
+- - nova-compute:ceph-access
   - cinder-ceph:ceph-access
 - - ceph-mon:client
   - cinder-ceph:ceph
@@ -88,11 +68,7 @@ relations:
 - - ceph-osd:mon
   - ceph-mon:osd
 - - ntp:juju-info
-  - nova-compute-1a:juju-info
-- - ntp:juju-info
-  - nova-compute-1b:juju-info
-- - ntp:juju-info
-  - nova-compute-1c:juju-info
+  - nova-compute:juju-info
 - - ceph-radosgw:mon
   - ceph-mon:radosgw
 - - ceph-radosgw:identity-service
@@ -142,11 +118,7 @@ relations:
 - - neutron-api:certificates
   - vault:certificates
 - - ovn-chassis:nova-compute
-  - nova-compute-1a:neutron-plugin
-- - ovn-chassis:nova-compute
-  - nova-compute-1b:neutron-plugin
-- - ovn-chassis:nova-compute
-  - nova-compute-1c:neutron-plugin
+  - nova-compute:neutron-plugin
 - - ovn-chassis:certificates
   - vault:certificates
 - - ovn-chassis:ovsdb
@@ -296,11 +268,6 @@ applications:
       flat-network-providers: physnet1
       worker-multiplier: *worker-multiplier
       openstack-origin: *openstack-origin
-      # LA_TEMP:
-      enable-ml2-dns: true
-      enable-ml2-port-security: true
-      manage-neutron-plugin-legacy-mode: false
-      neutron-security-groups: true
     bindings:
       "": public-space
     to:
@@ -342,59 +309,21 @@ applications:
       "": public-space
     to:
     - lxd:0
-  nova-compute-1a:
+  nova-compute:
     annotations:
       gui-x: '190'
       gui-y: '890'
     charm: cs:~openstack-charmers-next/nova-compute
-    num_units: 1  # LA_TEMP
+    num_units: 3
     options:
       config-flags: default_ephemeral_format=ext4
       enable-live-migration: true
       enable-resize: true
       migration-auth-type: ssh
       openstack-origin: *openstack-origin
-      # LA_TEMP:
-      aa-profile-mode: enforce
-      customize-failure-domain: false
-      encrypt: false
     to:
     - '0'
-  nova-compute-1b:
-    annotations:
-      gui-x: '190'
-      gui-y: '890'
-    charm: cs:~openstack-charmers-next/nova-compute
-    num_units: 1  # LA_TEMP
-    options:
-      config-flags: default_ephemeral_format=ext4
-      enable-live-migration: true
-      enable-resize: true
-      migration-auth-type: ssh
-      openstack-origin: *openstack-origin
-      # LA_TEMP:
-      aa-profile-mode: enforce
-      customize-failure-domain: false
-      encrypt: false
-    to:
     - '1'
-  nova-compute-1c:
-    annotations:
-      gui-x: '190'
-      gui-y: '890'
-    charm: cs:~openstack-charmers-next/nova-compute
-    num_units: 1  # LA_TEMP
-    options:
-      config-flags: default_ephemeral_format=ext4
-      enable-live-migration: true
-      enable-resize: true
-      migration-auth-type: ssh
-      openstack-origin: *openstack-origin
-      # LA_TEMP:
-      aa-profile-mode: enforce
-      customize-failure-domain: false
-      encrypt: false
-    to:
     - '2'
   logrotated:  # LA_TEMP
     charm: cs:logrotated

@@ -401,6 +401,7 @@ applications:
     options:
       ovn-bridge-mappings: physnet1:br-ex
       bridge-interface-mappings: *data-port
+      debug: true  # LA_TEMP
   vault-mysql-router:
     annotations:
       gui-x: '1535'
